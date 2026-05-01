@@ -1,0 +1,49 @@
+К первой теме  void *a2 указатель на функцию -
+
+реализовать функцию которая осуществляет сравнение двух данных и отдать эту функцию сортировке
+
+структура там double int их надо сравнить
+
+
+int max(void*a, void*b, int(*compare) (void*, void)){
+		if(compare(a,b)  == -1) return 1
+		return 2
+	}
+int compint (void*a, void*b){
+	int n1 = *((int*) a)
+	int n2 = *((int*) b)
+	if (n1<n1) return -1
+	if (n1>n1) return 1
+	return 0
+
+}
+void memcpy1(void*a, void*b, int size)
+{
+char*p1 = a, *p2 =b
+for (int i = 0; i < size, size++) *p1++
+}
+
+int comps(void*a, void*b){
+	struct s *s1 = (struct S*)a;
+	struct s *s1 = (struct S*)a;
+
+
+}
+
+можно memcpy
+
+
+3 4 5 по другому сделаны
+sort h
+необходимо организовать все методы чтобы их не поменял пользователь  а только через set method(безопасные)
+
+Enum (buble_sort=1, QSORT_SORT)
+должная быть функция set_method(Enum sort_method s)
+
+в sort.c
+static Enum sort_method = QUICK_SORT
+
+
+
+типа пользователь не должен суметь поменять sort method кроме вызова set method
+описать задачу в отчете
