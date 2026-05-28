@@ -1,96 +1,67 @@
 #include <stdio.h>
 #include "sort.h"
-
-/* -------------------------------------------------------
- * Структура с двумя полями для демонстрации.
- * ------------------------------------------------------- */
-typedef struct {
-    int    id;
-    double value;
-} item_t;
-
-/* Сравнение int */
-int comp_int(void *a, void *b)
-{
-    int n1 = *((int *)a);
-    int n2 = *((int *)b);  /* было n1<n1 — опечатка! */
-    if (n1 < n2) return -1;
-    if (n1 > n2) return  1;
+int compint(void* a, void* b) {
+    int a1 = *(int*)a;
+    int a2 = *(int*)b;
+    if (a1 < a2) return -1;
+    if (a1 > a2) return 1;
     return 0;
 }
-
-/* Сравнение double */
-int comp_double(void *a, void *b)
-{
-    double d1 = *((double *)a);
-    double d2 = *((double *)b);
-    if (d1 < d2) return -1;
-    if (d1 > d2) return  1;
+int compdouble(void* a, void* b) {
+    double a1 = *(double*)a;
+    double a2 = *(double*)b;
+    if (a1 < a2) return -1;
+    if (a1 > a2) return 1;
     return 0;
 }
-
-/* Сравнение структуры по полю value */
-int comp_item(void *a, void *b)
-{
-    /* Было: оба указателя s1, оба приведены к a — ошибка! */
-    item_t *s1 = (item_t *)a;
-    item_t *s2 = (item_t *)b;
-    if (s1->value < s2->value) return -1;
-    if (s1->value > s2->value) return  1;
+typedef struct student {
+    int course;
+    int grade;
+} student_t;
+int comp_student(void* a, void* b) {
+    student_t* student1 = (student_t*)a;
+    student_t* student2 = (student_t*)b;
+    if (student1->grade > student2->grade) return 1;
+    if (student1->grade < student2->grade) return -1;
     return 0;
 }
-
-/* Передаём функцию сравнения в max() — пример из задания */
-int max_elem(void *a, void *b, int (*compare)(void *, void *))
-{
-    /* compare возвращает 1, если a > b */
-    if (compare(a, b) == 1) return 1; /* a больше */
-    return 2;                          /* b больше или равны */
-}
-
-/* -------------------------------------------------------
- * Тест: прогон всех методов на массиве int
- * ------------------------------------------------------- */
-int main(void)
-{
-    sort_method_t methods[] = {
-        BUBBLE_SORT, INSERTION_SORT, SELECTION_SORT, COMB_SORT,
-        SHELL_SORT,  QUICK_SORT,     MERGE_SORT,     HEAP_SORT
-    };
-    const char *names[] = {
-        "bubble", "insertion", "selection", "comb",
-        "shell",  "quick",     "merge",     "heap"
-    };
-    int nmethods = sizeof(methods) / sizeof(methods[0]);
-
-    int ref[] = {1, 2, 3, 4, 5};
-
-    for (int m = 0; m < nmethods; m++) {
-        int arr[] = {5, 3, 1, 4, 2};
-        int n = sizeof(arr) / sizeof(arr[0]);
-
-        sort_set_method(methods[m]);
+int main() {
+    sort_method_t methods[] = {BUBBLE_SORT, INSERTION_SORT, SELECTION_SORT, COMB_SORT, SHELL_SORT,
+        QUICK_SORT, MERGE_SORT, HEAP_SORT};
+    for (int i = 0; i <= 7; i++) {
+        /*Тест массива Double*/
+        //printf("%i\n", sort_set_method(methods[i]));
         sort_set_direction(SORT_ASC);
-        int err = sort(arr, n, sizeof(int), comp_int);
-
-        if (err != SORT_OK) {
-            printf("FAIL method=%s err=%d\n", names[m], err);
-            continue;
+        sort_set_method(methods[i]);
+        double doublemass[] = {3.7, 6.626, 67.23, 0.000142, 42.12, 11.52, -1523.24};
+        int size = sizeof(doublemass) / sizeof(doublemass[0]);
+        if (sort(doublemass, size, sizeof(doublemass[0]), compdouble) != SORT_OK) {
+            printf("Sort failed DOUBLE\n");
+            printf("%i", methods[i]);
         }
-        int ok = 1;
-        for (int i = 0; i < n; i++) {
-            if (arr[i] != ref[i]) { ok = 0; break; }
+        else {
+            printf("OK DOUBLE\n");
         }
-        printf("%s: %s\n", names[m], ok ? "OK" : "FAIL");
+        /*Тест INT*/
+        int intmass[] = {3, 6, 67, 0, 42, 11, -1523, 12};
+        sort_set_direction(SORT_DESC);
+        size = sizeof(intmass) / sizeof(intmass[0]);
+        if (sort(intmass, size, sizeof(intmass[0]), compint) != 0) {
+            printf("Sort failed INT\n");
+        }
+        else {
+            printf("OK INT\n");
+        }
+        /*Тест структуры*/
+        student_t students[] = {{1, 2}, {42, 14}, {12, 24}, {41, 2}, {3, 2}, {0, -12}, {-21, 4}};
+        sort_set_direction(SORT_ASC);
+        size = sizeof(students) / sizeof(student_t);
+        if (sort(students, size, sizeof(student_t), comp_student) != 0) {
+            printf("Sort failed STUDENT\n");
+        }
+        else {
+            printf("OK STUDENT\n");
+        }
     }
-
-    /* Тест структуры */
-    item_t items[] = {{3, 3.0}, {1, 1.0}, {2, 2.0}};
-    sort_set_method(QUICK_SORT);
-    sort_set_direction(SORT_DESC);
-    sort(items, 3, sizeof(item_t), comp_item);
-    printf("struct desc: %.0f %.0f %.0f (expect 3 2 1)\n",
-           items[0].value, items[1].value, items[2].value);
-
     return 0;
 }

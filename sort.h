@@ -26,7 +26,7 @@ typedef enum {
     SORT_DESC = 2
 } sort_direction_t;
 
-/* Сеттеры — единственный способ изменить параметры */
+/* Сеттер — единственный способ изменить параметры */
 int sort_set_method(sort_method_t method);
 int sort_set_direction(sort_direction_t direction);
 
@@ -34,4 +34,4 @@ int sort_set_direction(sort_direction_t direction);
 int sort(void *array, int size, int elemsize,
          int (*comp)(void *a1, void *a2));
 
-#endif /* SORT_H */
+#endif

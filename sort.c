@@ -16,8 +16,6 @@ static sort_direction_t current_direction = SORT_ASC;
  * ------------------------------------------------------- */
 static void elem_move(void *dst, const void *src, int elemsize)
 {
-    /* Нельзя просто *dst = *src — тип неизвестен.
-     * memcpy работает побайтово для любого типа. */
     memcpy(dst, src, elemsize);
 }
 
@@ -29,12 +27,22 @@ static void elem_move(void *dst, const void *src, int elemsize)
 static void elem_swap(void *a, void *b, int elemsize)
 {
     char tmp[256];
-    char *buf = (elemsize <= 256) ? tmp : (char *)malloc(elemsize);
-    if (buf == NULL) return;
+    char* buf;
+    if (elemsize <= 256) {
+        buf = tmp;
+    }
+    else {
+        buf = (char *)malloc(elemsize);
+    }
+    if (buf == NULL) {
+        return;
+    }
     memcpy(buf, a, elemsize);
     memcpy(a,   b, elemsize);
     memcpy(b, buf, elemsize);
-    if (buf != tmp) free(buf);
+    if (buf != tmp) {
+        free(buf);
+    }
 }
 
 /* -------------------------------------------------------
@@ -44,7 +52,7 @@ static void elem_swap(void *a, void *b, int elemsize)
  * ------------------------------------------------------- */
 static char *elem_at(void *array, int i, int elemsize)
 {
-    return (char *)array + (size_t)i * elemsize;
+    return (char *)array + i * elemsize;
 }
 
 /* -------------------------------------------------------

@@ -3,4 +3,8 @@ project(Cursovaya C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(Cursovaya main.c)
+add_executable(Cursovaya main.c
+        sort.c
+        sort.h
+
+)
